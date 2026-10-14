@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     {% load static %}
-
     <meta charset="UTF-8">
 
     <link rel="stylesheet"
@@ -20,7 +19,7 @@
         <div class="container-fluid">
 
             <div class="navbar-header">
-                {% url 'onlinecourse:index' %}
+                <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">
                     Home
                 </a>
             </div>
@@ -42,32 +41,23 @@
         <h2>{{ course.name }}</h2>
 
         <div class="card-columns-vertical">
-
             {% for lesson in course.lesson_set.all %}
             <div class="card mt-1">
-
                 <div class="card-header">
                     <h5>
-                        Lesson {{ lesson.order|add:1 }}:
-                        {{ lesson.title }}
+                        Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}
                     </h5>
                 </div>
-
                 <div class="card-body">
                     {{ lesson.content }}
                 </div>
-
             </div>
             {% endfor %}
-
         </div>
 
         <!-- Exam Section -->
-
         {% if user.is_authenticated %}
-
         <br>
-
         <button class="btn btn-primary btn-block"
                 data-toggle="collapse"
                 data-target="#exam">
@@ -75,56 +65,39 @@
         </button>
 
         <div id="exam" class="collapse mt-3">
-
             <form id="questionform"
-                  action="{% url 'onlinecourseen %}
+                  action="{% url 'onlinecourse:submit' course.id %}"
+                  method="post">
+                {% csrf_token %}
 
                 {% for question in course.question_set.all %}
-
                 <div class="card mt-2">
-
                     <div class="card-header">
                         <h5>{{ question.content }}</h5>
                     </div>
-
                     <div class="card-body">
-
                         {% for choice in question.choice_set.all %}
-
                         <div class="form-check">
                             <label class="form-check-label">
-
                                 <input type="checkbox"
-                                       name="choice_{{ choice.id }}"
+                                       name="choice"
                                        class="form-check-input"
-                                       id="{{ choice.id }}"
                                        value="{{ choice.id }}">
-
                                 {{ choice.content }}
-
                             </label>
                         </div>
-
                         {% endfor %}
-
                     </div>
-
                 </div>
-
                 {% endfor %}
 
                 <br>
-
                 <input class="btn btn-success btn-block"
                        type="submit"
-                       value="Submit">
-
+                       value="Submit Exam">
             </form>
-
         </div>
-
         {% endif %}
-
     </div>
 
 </body>
